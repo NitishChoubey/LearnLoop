@@ -1,0 +1,183 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UrgencyLevel {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum RequestStatus {
+  OPEN
+  MATCHED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum SessionStatus {
+  SCHEDULED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum TransactionType {
+  EARNED
+  SPENT
+  BONUS
+}
+
+enum NotificationType {
+  MATCH_FOUND
+  SESSION_STARTING
+  CREDITS_EARNED
+  BADGE_UNLOCKED
+}
+
+model User {
+  id                   String              @id @default(uuid())
+  name                 String
+  email                String              @unique
+  password             String
+  institutionEmail     String              @unique
+  isVerified           Boolean             @default(false)
+  otpCode              String?
+  otpExpiry            DateTime?
+  knowledgeCredits     Int                 @default(20)
+  reputationScore      Float               @default(0)
+  teachingStreak       Int                 @default(0)
+  totalSessionsTaught  Int                 @default(0)
+  totalSessionsLearned Int                 @default(0)
+  profilePicture       String?
+  bio                  String?
+  languagesSpoken      String[]
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+
+  subjectExpertise     SubjectExpertise[]
+  helpRequestsPosted   HelpRequest[]       @relation("LearnerRequests")
+  sessionsAsTutor      Session[]           @relation("TutorSessions")
+  sessionsAsLearner    Session[]           @relation("LearnerSessions")
+  creditTransactions   CreditTransaction[]
+  notifications        Notification[]
+  badges               UserBadge[]
+}
+
+model SubjectExpertise {
+  id      String @id @default(uuid())
+  subject String
+  level   String
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model HelpRequest {
+  id                String        @id @default(uuid())
+  subject           String
+  topic             String
+  description       String
+  preferredLanguage String
+  urgencyLevel      UrgencyLevel  @default(LOW)
+  sessionDuration   Int
+  creditCost        Int
+  status            RequestStatus @default(OPEN)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  postedById        String
+  postedBy          User          @relation("LearnerRequests", fields: [postedById], references: [id])
+
+  assignedTutorId   String?
+  session           Session?
+}
+
+model Session {
+  id                  String        @id @default(uuid())
+  startTime           DateTime?
+  endTime             DateTime?
+  status              SessionStatus @default(SCHEDULED)
+  sessionNotes        String?
+  sharedResources     String[]
+  creditsTransferred  Int           @default(0)
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  helpRequestId       String        @unique
+  helpRequest         HelpRequest   @relation(fields: [helpRequestId], references: [id])
+
+  tutorId             String
+  tutor               User          @relation("TutorSessions", fields: [tutorId], references: [id])
+
+  learnerId           String
+  learner             User          @relation("LearnerSessions", fields: [learnerId], references: [id])
+
+  feedbackFromLearner Feedback?     @relation("LearnerFeedback")
+  feedbackFromTutor   Feedback?     @relation("TutorFeedback")
+  creditTransactions  CreditTransaction[]
+}
+
+model Feedback {
+  id               String   @id @default(uuid())
+  rating           Int
+  comment          String?
+
+  learnerSessionId String?  @unique
+  learnerSession   Session? @relation("LearnerFeedback", fields: [learnerSessionId], references: [id])
+
+  tutorSessionId   String?  @unique
+  tutorSession     Session? @relation("TutorFeedback", fields: [tutorSessionId], references: [id])
+}
+
+model CreditTransaction {
+  id               String          @id @default(uuid())
+  type             TransactionType
+  amount           Int
+  reason           String
+  timestamp        DateTime        @default(now())
+
+  userId           String
+  user             User            @relation(fields: [userId], references: [id])
+
+  relatedSessionId String?
+  relatedSession   Session?        @relation(fields: [relatedSessionId], references: [id])
+}
+
+model Badge {
+  id          String      @id @default(uuid())
+  name        String      @unique
+  description String
+  icon        String
+  users       UserBadge[]
+}
+
+model UserBadge {
+  id         String   @id @default(uuid())
+  unlockedAt DateTime @default(now())
+
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  badgeId    String
+  badge      Badge    @relation(fields: [badgeId], references: [id])
+
+  @@unique([userId, badgeId])
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  message   String
+  type      NotificationType
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
