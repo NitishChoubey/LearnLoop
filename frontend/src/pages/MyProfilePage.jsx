@@ -63,11 +63,12 @@ export default function MyProfilePage() {
 
   return (
     <div className="page-container max-w-3xl">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-10">
         <div>
-          <h1 className="section-title">My Profile</h1>
-          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
-            Manage your profile, expertise, and languages
+          <p className="text-xs font-semibold uppercase tracking-widest text-teal-600 dark:text-teal-400 mb-2">Identity</p>
+          <h1 className="section-title">My profile</h1>
+          <p className="text-slate-600 dark:text-slate-400 text-sm mt-2">
+            Expertise and languages power tutor matching — keep them current.
           </p>
         </div>
         <button onClick={handleSave} disabled={saving} className="btn-teal px-5 py-2.5 flex items-center gap-2">
@@ -78,7 +79,7 @@ export default function MyProfilePage() {
 
       <div className="space-y-6">
         {/* Stats Summary */}
-        <div className="card p-5">
+        <div className="card p-6 rounded-3xl">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-400 to-teal-500 flex items-center justify-center text-white font-bold text-2xl flex-shrink-0">
               {user?.name?.[0]?.toUpperCase()}
@@ -100,7 +101,7 @@ export default function MyProfilePage() {
         </div>
 
         {/* Basic Info */}
-        <div className="card p-6 space-y-4">
+        <div className="card p-6 space-y-4 rounded-3xl">
           <h2 className="font-bold text-gray-900 dark:text-white">Basic Information</h2>
           <div>
             <label className="label">Display Name</label>
@@ -127,7 +128,7 @@ export default function MyProfilePage() {
         </div>
 
         {/* Languages */}
-        <div className="card p-6">
+        <div className="card p-6 rounded-3xl">
           <h2 className="font-bold text-gray-900 dark:text-white mb-4">Languages Spoken</h2>
           <div className="flex flex-wrap gap-2">
             {ALL_LANGUAGES.map((lang) => (
@@ -148,7 +149,7 @@ export default function MyProfilePage() {
         </div>
 
         {/* Subject Expertise */}
-        <div className="card p-6">
+        <div className="card p-6 rounded-3xl">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-bold text-gray-900 dark:text-white">Subject Expertise</h2>
             <button
@@ -195,7 +196,7 @@ export default function MyProfilePage() {
         </div>
 
         {/* Badges */}
-        <div className="card p-6">
+        <div className="card p-6 rounded-3xl">
           <h2 className="font-bold text-gray-900 dark:text-white mb-4">My Badges</h2>
           <BadgeDisplay badges={user?.badges || []} size="md" max={12} />
         </div>

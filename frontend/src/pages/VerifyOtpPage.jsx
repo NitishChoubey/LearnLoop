@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { BookOpen, Loader2, RotateCcw } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { BookOpen, Loader2, RotateCcw, ShieldCheck } from "lucide-react";
 import toast from "react-hot-toast";
 import useAuthStore from "../store/useAuthStore";
 
@@ -53,7 +53,7 @@ export default function VerifyOtpPage() {
     }
     const result = await verifyOtp(otp);
     if (result.success) {
-      toast.success("Email verified! Welcome to LearnLoop 🎉");
+      toast.success("Email verified! Welcome to LearnLoop.");
       navigate("/dashboard");
     } else {
       toast.error(result.message);
@@ -73,26 +73,32 @@ export default function VerifyOtpPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-500 to-teal-600 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-mesh-light dark:bg-mesh-dark">
+      <div className="w-full max-w-lg">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <BookOpen size={30} className="text-white" />
+          <Link to="/" className="inline-flex items-center gap-2 justify-center mb-6">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-400 to-primary-700 flex items-center justify-center shadow-glow ring-2 ring-white/30">
+              <BookOpen size={24} className="text-white" />
+            </div>
+          </Link>
+          <div className="inline-flex items-center gap-2 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 text-xs font-semibold px-3 py-1 mb-4">
+            <ShieldCheck size={14} />
+            Secure verification
           </div>
-          <h1 className="text-3xl font-bold text-white">Verify Your Email</h1>
-          <p className="text-white/70 mt-2 text-sm">
+          <h1 className="font-display text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Check your inbox</h1>
+          <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm max-w-sm mx-auto">
             We sent a 6-digit code to{" "}
-            <span className="font-semibold text-white">{user?.institutionEmail}</span>
+            <span className="font-semibold text-slate-800 dark:text-slate-200">{user?.institutionEmail}</span>
           </p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8">
+        <div className="card p-8 sm:p-10 shadow-soft-lg">
           <form onSubmit={handleSubmit}>
-            <div className="flex justify-center gap-3 mb-8" onPaste={handlePaste}>
+            <div className="flex justify-center gap-2 sm:gap-3 mb-10" onPaste={handlePaste}>
               {digits.map((d, i) => (
                 <input
                   key={i}
-                  ref={(el) => (inputs.current[i] = el)}
+                  ref={(el) => { inputs.current[i] = el; }}
                   type="text"
                   inputMode="numeric"
                   maxLength={1}
@@ -100,10 +106,10 @@ export default function VerifyOtpPage() {
                   onChange={(e) => handleChange(i, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(i, e)}
                   autoFocus={i === 0}
-                  className={`w-12 h-14 text-center text-2xl font-bold rounded-xl border-2 transition-all duration-200 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none
+                  className={`w-11 sm:w-12 h-14 text-center text-2xl font-bold rounded-xl border-2 transition-all duration-200 bg-slate-50 dark:bg-slate-800/80 text-slate-900 dark:text-white font-display
                     ${d
-                      ? "border-teal-500 bg-teal-50 dark:bg-teal-900/20"
-                      : "border-gray-200 dark:border-gray-600 focus:border-teal-500"
+                      ? "border-teal-500 shadow-[0_0_0_3px_rgba(20,184,166,0.2)]"
+                      : "border-slate-200 dark:border-slate-600 focus:border-teal-500"
                     }`}
                 />
               ))}
@@ -112,35 +118,34 @@ export default function VerifyOtpPage() {
             <button
               type="submit"
               disabled={isLoading || digits.join("").length !== 6}
-              className="w-full btn-primary py-3 flex items-center justify-center gap-2"
+              className="w-full btn-primary py-3.5 flex items-center justify-center gap-2 rounded-xl text-base"
             >
               {isLoading ? (
                 <>
                   <Loader2 size={18} className="animate-spin" />
-                  Verifying...
+                  Verifying…
                 </>
               ) : (
-                "Verify & Continue"
+                "Verify & continue"
               )}
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
-              Didn't receive the code?
-            </p>
+          <div className="mt-8 text-center">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">Didn&apos;t receive the code?</p>
             <button
+              type="button"
               onClick={handleResend}
               disabled={resendCooldown > 0}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-teal-500 hover:underline disabled:opacity-50 disabled:no-underline"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-teal-600 dark:text-teal-400 hover:underline disabled:opacity-50 disabled:no-underline"
             >
               <RotateCcw size={14} />
               {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend OTP"}
             </button>
           </div>
 
-          <div className="mt-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl p-3 text-xs text-amber-600 dark:text-amber-400 text-center">
-            The OTP expires in 10 minutes. Check your spam folder if needed.
+          <div className="mt-6 rounded-2xl border border-amber-200/80 bg-amber-50/90 dark:bg-amber-950/30 dark:border-amber-800/50 px-4 py-3 text-xs text-amber-900 dark:text-amber-200/90 text-center leading-relaxed">
+            Code expires in 10 minutes. Check spam if you don&apos;t see it.
           </div>
         </div>
       </div>

@@ -65,16 +65,17 @@ export default function PostRequestPage() {
 
   return (
     <div className="page-container max-w-3xl">
-      <div className="mb-8">
-        <h1 className="section-title">Post a Help Request</h1>
-        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
-          Describe what you need help with. Credits are held in escrow until your session completes.
+      <div className="mb-10">
+        <p className="text-xs font-semibold uppercase tracking-widest text-teal-600 dark:text-teal-400 mb-2">Learn</p>
+        <h1 className="section-title">Post a help request</h1>
+        <p className="text-slate-600 dark:text-slate-400 text-sm mt-2 max-w-xl">
+          Describe what you need. Credits are held in escrow until your session completes.
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        <form onSubmit={handleSubmit} className="lg:col-span-2 space-y-5">
-          <div className="card p-6 space-y-5">
+      <div className="grid lg:grid-cols-3 gap-8">
+        <form onSubmit={handleSubmit} className="lg:col-span-2 space-y-6">
+          <div className="card p-6 sm:p-8 space-y-5 rounded-3xl">
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
                 <label className="label">Subject *</label>

@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "LearnLoop peer-to-peer knowledge exchange platform backend",
   "main": "src/server.js",
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",

@@ -191,7 +191,12 @@ router.put("/:id/assign", protect, requireVerified, async (req, res) => {
       }),
     ]);
 
-    res.json({ message: "Request accepted! Session created.", request: updatedRequest, session });
+    res.json({
+      message: "Request accepted! Session created.",
+      request: updatedRequest,
+      session,
+      sessionId: session.id,
+    });
   } catch (error) {
     console.error("Assign request error:", error);
     res.status(500).json({ message: "Server error" });
@@ -213,7 +218,11 @@ router.delete("/:id", protect, async (req, res) => {
       return res.status(400).json({ message: "Cannot cancel a request that is in progress or completed" });
     }
 
-    await prisma.$transaction([
+    const linkedSession = await prisma.session.findUnique({
+      where: { helpRequestId: req.params.id },
+    });
+
+    const ops = [
       prisma.helpRequest.update({
         where: { id: req.params.id },
         data: { status: "CANCELLED" },
@@ -230,7 +239,18 @@ router.delete("/:id", protect, async (req, res) => {
           userId: req.user.id,
         },
       }),
-    ]);
+    ];
+
+    if (linkedSession && ["SCHEDULED", "ACTIVE"].includes(linkedSession.status)) {
+      ops.unshift(
+        prisma.session.update({
+          where: { id: linkedSession.id },
+          data: { status: "CANCELLED" },
+        })
+      );
+    }
+
+    await prisma.$transaction(ops);
 
     res.json({ message: "Request cancelled. Credits refunded." });
   } catch (error) {

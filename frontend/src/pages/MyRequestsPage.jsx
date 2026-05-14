@@ -50,11 +50,12 @@ export default function MyRequestsPage() {
 
   return (
     <div className="page-container">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
         <div>
-          <h1 className="section-title">My Requests</h1>
-          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
-            Track all your help requests and sessions
+          <p className="text-xs font-semibold uppercase tracking-widest text-teal-600 dark:text-teal-400 mb-2">Track</p>
+          <h1 className="section-title">My requests</h1>
+          <p className="text-slate-600 dark:text-slate-400 text-sm mt-2 max-w-lg">
+            Status of every help request you posted, refunds, and linked sessions.
           </p>
         </div>
         <Link to="/requests/new" className="btn-teal text-sm px-4 py-2 flex items-center gap-2 self-start">
@@ -95,7 +96,7 @@ export default function MyRequestsPage() {
       ) : filtered.length > 0 ? (
         <div className="space-y-4">
           {filtered.map((request) => (
-            <div key={request.id} className="card p-5">
+            <div key={request.id} className="card p-5 sm:p-6 rounded-3xl">
               <RequestCard request={request} />
               <div className="flex gap-2 mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
                 {request.session && (

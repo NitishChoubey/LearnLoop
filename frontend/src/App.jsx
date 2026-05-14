@@ -10,14 +10,17 @@ import RegisterPage from "./pages/RegisterPage";
 import VerifyOtpPage from "./pages/VerifyOtpPage";
 import DashboardPage from "./pages/DashboardPage";
 import RequestBoardPage from "./pages/RequestBoardPage";
+import RequestDetailPage from "./pages/RequestDetailPage";
 import PostRequestPage from "./pages/PostRequestPage";
 import MyRequestsPage from "./pages/MyRequestsPage";
 import SessionRoomPage from "./pages/SessionRoomPage";
+import MySessionsPage from "./pages/MySessionsPage";
 import TutorProfilePage from "./pages/TutorProfilePage";
 import MyProfilePage from "./pages/MyProfilePage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import CreditWalletPage from "./pages/CreditWalletPage";
+import TutorSessionPrepPage from "./pages/TutorSessionPrepPage";
 
 const ProtectedRoute = ({ children }) => {
   const { token } = useAuthStore();
@@ -81,8 +84,12 @@ export default function App() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/requests" element={<RequestBoardPage />} />
         <Route path="/requests/new" element={<PostRequestPage />} />
+        <Route path="/requests/:id" element={<RequestDetailPage />} />
         <Route path="/my-requests" element={<MyRequestsPage />} />
+        <Route path="/sessions" element={<MySessionsPage />} />
         <Route path="/sessions/:id" element={<SessionRoomPage />} />
+        <Route path="/tutor/sessions/:id/prep" element={<TutorSessionPrepPage />} />
+        <Route path="/tutor/sessions/:id" element={<SessionRoomPage />} />
         <Route path="/tutors/:id" element={<TutorProfilePage />} />
         <Route path="/profile" element={<MyProfilePage />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />

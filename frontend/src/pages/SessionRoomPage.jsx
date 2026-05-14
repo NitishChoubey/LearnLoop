@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   Send, Square, Play, FileText, Users, Loader2,
   Star, X, MessageSquare, PenLine,
@@ -13,7 +13,11 @@ import SessionTimer from "../components/SessionTimer";
 export default function SessionRoomPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, updateUser } = useAuthStore();
+  const isTutorSessionRoom =
+    /^\/tutor\/sessions\/[^/]+$/.test(location.pathname);
+  const afterSessionPath = isTutorSessionRoom ? "/sessions?tab=teaching" : "/my-requests";
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState([]);
@@ -44,13 +48,13 @@ export default function SessionRoomPage() {
         }
       } catch {
         toast.error("Session not found");
-        navigate("/my-requests");
+        navigate(afterSessionPath);
       } finally {
         setLoading(false);
       }
     };
     load();
-  }, [id, navigate]);
+  }, [id, navigate, afterSessionPath]);
 
   useEffect(() => {
     if (!session || !user) return;
@@ -173,7 +177,7 @@ export default function SessionRoomPage() {
       await api.post(`/sessions/${id}/rate`, { rating, comment: ratingComment });
       toast.success("Feedback submitted!");
       setShowRatingModal(false);
-      navigate("/my-requests");
+      navigate(afterSessionPath);
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to submit rating");
     } finally {
@@ -190,9 +194,9 @@ export default function SessionRoomPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex flex-col h-screen bg-mesh-light dark:bg-mesh-dark">
       {/* Header */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center gap-4">
+      <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800 px-4 py-3 flex items-center gap-4 shadow-sm">
         <div className="flex-1 min-w-0">
           <h1 className="font-bold text-gray-900 dark:text-white truncate text-sm sm:text-base">
             {session?.helpRequest?.topic}
@@ -403,7 +407,7 @@ export default function SessionRoomPage() {
               Submit Feedback
             </button>
             <button
-              onClick={() => { setShowRatingModal(false); navigate("/my-requests"); }}
+              onClick={() => { setShowRatingModal(false); navigate(afterSessionPath); }}
               className="w-full text-center text-sm text-gray-400 hover:text-gray-600 mt-3"
             >
               Skip for now

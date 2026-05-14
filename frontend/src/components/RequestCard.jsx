@@ -3,18 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 
 const URGENCY_CONFIG = {
-  LOW: { color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400", label: "Low" },
-  MEDIUM: { color: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400", label: "Medium" },
-  HIGH: { color: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400", label: "High" },
-  URGENT: { color: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400", label: "Urgent ⚡" },
+  LOW: { color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300", label: "Low" },
+  MEDIUM: { color: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300", label: "Medium" },
+  HIGH: { color: "bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300", label: "High" },
+  URGENT: { color: "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300", label: "Urgent" },
 };
 
 const STATUS_CONFIG = {
-  OPEN: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400",
-  MATCHED: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  IN_PROGRESS: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
-  COMPLETED: "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400",
-  CANCELLED: "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400",
+  OPEN: "bg-teal-100 text-teal-800 dark:bg-teal-900/40 dark:text-teal-300",
+  MATCHED: "bg-sky-100 text-sky-800 dark:bg-sky-900/40 dark:text-sky-300",
+  IN_PROGRESS: "bg-violet-100 text-violet-800 dark:bg-violet-900/40 dark:text-violet-300",
+  COMPLETED: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400",
+  CANCELLED: "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300",
 };
 
 export default function RequestCard({ request, onAccept, showAcceptButton = false }) {
@@ -23,67 +23,65 @@ export default function RequestCard({ request, onAccept, showAcceptButton = fals
   const statusClass = STATUS_CONFIG[request.status] || STATUS_CONFIG.OPEN;
 
   return (
-    <div className="card p-5 hover:shadow-md transition-shadow duration-200 animate-fade-in">
+    <div className="card-hover p-5 sm:p-6 animate-fade-in">
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1 min-w-0">
-          <div className="flex flex-wrap items-center gap-2 mb-1">
-            <span className="bg-primary-500/10 text-primary-500 dark:text-primary-300 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <span className="rounded-lg bg-primary-500/10 text-primary-700 dark:text-primary-300 text-xs font-bold px-2.5 py-1">
               {request.subject}
             </span>
-            <span className={`badge ${urgency.color}`}>
-              {urgency.label}
-            </span>
-            <span className={`badge ${statusClass}`}>
-              {request.status.replace("_", " ")}
-            </span>
+            <span className={`badge ${urgency.color}`}>{urgency.label}</span>
+            <span className={`badge ${statusClass}`}>{request.status.replace("_", " ")}</span>
           </div>
-          <h3 className="font-semibold text-gray-900 dark:text-white text-base leading-tight truncate">
+          <h3 className="font-display font-semibold text-slate-900 dark:text-white text-lg leading-snug line-clamp-2">
             {request.topic}
           </h3>
         </div>
-        <div className="flex items-center gap-1 bg-gold-500/10 text-gold-600 dark:text-gold-400 px-2.5 py-1 rounded-full flex-shrink-0">
-          <Coins size={14} />
-          <span className="font-bold text-sm">{request.creditCost}</span>
+        <div className="flex items-center gap-1 rounded-xl bg-gradient-to-br from-gold-100 to-amber-100 dark:from-gold-900/30 dark:to-amber-900/20 text-gold-700 dark:text-gold-400 px-3 py-1.5 font-bold text-sm shadow-inner border border-gold-200/50 dark:border-gold-700/30 shrink-0">
+          <Coins size={15} />
+          {request.creditCost}
         </div>
       </div>
 
-      <p className="text-gray-500 dark:text-gray-400 text-sm line-clamp-2 mb-4">
+      <p className="text-slate-600 dark:text-slate-400 text-sm line-clamp-2 mb-4 leading-relaxed">
         {request.description}
       </p>
 
-      <div className="flex flex-wrap items-center gap-3 text-xs text-gray-400 dark:text-gray-500 mb-4">
-        <span className="flex items-center gap-1">
-          <Clock size={12} />
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-slate-500 mb-5 pb-5 border-b border-slate-100 dark:border-slate-800">
+        <span className="inline-flex items-center gap-1.5">
+          <Clock size={13} className="text-teal-500" />
           {request.sessionDuration} min
         </span>
-        <span className="flex items-center gap-1">
-          <Globe size={12} />
+        <span className="inline-flex items-center gap-1.5">
+          <Globe size={13} className="text-teal-500" />
           {request.preferredLanguage}
         </span>
         {request.postedBy && (
-          <span className="flex items-center gap-1">
-            <User size={12} />
+          <span className="inline-flex items-center gap-1.5">
+            <User size={13} className="text-teal-500" />
             {request.postedBy.name}
           </span>
         )}
-        <span className="ml-auto">
+        <span className="sm:ml-auto text-slate-400">
           {formatDistanceToNow(new Date(request.createdAt), { addSuffix: true })}
         </span>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row gap-2">
         <button
+          type="button"
           onClick={() => navigate(`/requests/${request.id}`)}
-          className="flex-1 text-center text-sm font-medium text-primary-500 dark:text-primary-300 border border-primary-500/30 dark:border-primary-400/30 py-2 rounded-lg hover:bg-primary-500/5 transition-colors"
+          className="flex-1 text-center text-sm font-semibold text-primary-700 dark:text-teal-300 border-2 border-slate-200 dark:border-slate-600 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-colors"
         >
-          View Details
+          View details
         </button>
         {showAcceptButton && request.status === "OPEN" && (
           <button
+            type="button"
             onClick={() => onAccept?.(request.id)}
-            className="flex-1 btn-teal text-sm py-2"
+            className="flex-1 btn-teal text-sm py-2.5 rounded-xl"
           >
-            Accept & Tutor
+            Accept &amp; tutor
           </button>
         )}
       </div>

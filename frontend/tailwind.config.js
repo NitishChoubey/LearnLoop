@@ -41,14 +41,37 @@ export default {
           800: "#a76915",
           900: "#8a540e",
         },
+        surface: {
+          DEFAULT: "#f8fafc",
+          dark: "#0f172a",
+        },
       },
       fontFamily: {
-        sans: ["Inter", "Poppins", "sans-serif"],
+        sans: ["Inter", "system-ui", "sans-serif"],
+        display: ["\"Plus Jakarta Sans\"", "Inter", "system-ui", "sans-serif"],
+      },
+      boxShadow: {
+        soft: "0 4px 24px -4px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.04)",
+        "soft-lg": "0 12px 40px -8px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(15, 23, 42, 0.05)",
+        glow: "0 0 40px -8px rgba(0, 180, 160, 0.45)",
+        "inner-glow": "inset 0 1px 0 0 rgba(255,255,255,0.15)",
+      },
+      backgroundImage: {
+        "mesh-light":
+          "radial-gradient(at 0% 0%, rgba(0, 180, 160, 0.14) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(30, 58, 95, 0.12) 0px, transparent 55%), radial-gradient(at 80% 100%, rgba(245, 166, 35, 0.1) 0px, transparent 45%)",
+        "mesh-dark":
+          "radial-gradient(at 0% 0%, rgba(0, 180, 160, 0.12) 0px, transparent 50%), radial-gradient(at 100% 20%, rgba(30, 58, 95, 0.35) 0px, transparent 50%), radial-gradient(at 50% 100%, rgba(15, 23, 42, 1) 0px, transparent 60%)",
+        "hero-auth":
+          "linear-gradient(135deg, #0f2744 0%, #1E3A5F 40%, #0d5c56 100%)",
+      },
+      borderRadius: {
+        "4xl": "2rem",
       },
       animation: {
-        "fade-in": "fadeIn 0.3s ease-in-out",
-        "slide-up": "slideUp 0.3s ease-out",
-        "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "fade-in": "fadeIn 0.4s ease-out",
+        "slide-up": "slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+        float: "float 6s ease-in-out infinite",
+        shimmer: "shimmer 2.5s ease-in-out infinite",
       },
       keyframes: {
         fadeIn: {
@@ -56,8 +79,16 @@ export default {
           "100%": { opacity: "1" },
         },
         slideUp: {
-          "0%": { transform: "translateY(10px)", opacity: "0" },
+          "0%": { transform: "translateY(12px)", opacity: "0" },
           "100%": { transform: "translateY(0)", opacity: "1" },
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-6px)" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "200% 0" },
+          "100%": { backgroundPosition: "-200% 0" },
         },
       },
     },

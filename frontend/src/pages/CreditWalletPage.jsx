@@ -4,7 +4,6 @@ import { formatDistanceToNow, format } from "date-fns";
 import { Link } from "react-router-dom";
 import api from "../lib/api";
 import useAuthStore from "../store/useAuthStore";
-import CreditBadge from "../components/CreditBadge";
 
 const TYPE_CONFIG = {
   EARNED: { icon: <TrendingUp size={16} />, color: "text-green-600 dark:text-green-400", bg: "bg-green-100 dark:bg-green-900/30", sign: "+" },
@@ -51,49 +50,48 @@ export default function CreditWalletPage() {
 
   return (
     <div className="page-container max-w-3xl">
-      <div className="mb-8">
-        <h1 className="section-title flex items-center gap-2">
-          <Coins size={26} className="text-gold-500" />
-          Credit Wallet
+      <div className="mb-10">
+        <p className="text-xs font-semibold uppercase tracking-widest text-gold-600 dark:text-gold-400 mb-2">Economy</p>
+        <h1 className="section-title flex items-center gap-3">
+          <Coins size={28} className="text-gold-500" />
+          Credit wallet
         </h1>
-        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
-          Your complete credit history and balance
+        <p className="text-slate-600 dark:text-slate-400 text-sm mt-2">
+          Balance, bonuses, and every credit moving through your account.
         </p>
       </div>
 
-      {/* Balance Card */}
-      <div className="bg-gradient-to-br from-primary-500 to-teal-600 rounded-2xl p-6 mb-6 text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full -translate-y-12 translate-x-12" />
-        <p className="text-sm font-medium text-white/70 mb-1">Current Balance</p>
-        <div className="flex items-baseline gap-2 mb-6">
-          <span className="text-5xl font-bold font-['Poppins']">{user?.knowledgeCredits}</span>
-          <span className="text-white/70 text-lg">credits</span>
+      <div className="rounded-3xl p-8 mb-8 text-white relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-teal-700 shadow-soft-lg ring-1 ring-white/10">
+        <div className="absolute top-0 right-0 w-52 h-52 bg-white/10 rounded-full -translate-y-16 translate-x-16 blur-2xl" />
+        <p className="text-sm font-medium text-white/70 mb-1 relative">Current balance</p>
+        <div className="flex items-baseline gap-2 mb-8 relative">
+          <span className="text-5xl sm:text-6xl font-bold font-display tracking-tight">{user?.knowledgeCredits}</span>
+          <span className="text-white/70 text-lg font-medium">credits</span>
         </div>
-        <div className="grid grid-cols-3 gap-4 text-sm">
-          <div className="bg-white/10 rounded-xl p-3 text-center">
-            <p className="text-white/70 text-xs mb-1">Total Earned</p>
-            <p className="font-bold text-green-300">+{totalEarned}</p>
+        <div className="grid grid-cols-3 gap-3 text-sm relative">
+          <div className="bg-white/15 rounded-2xl p-3 text-center backdrop-blur-sm ring-1 ring-white/10">
+            <p className="text-white/65 text-xs mb-1 font-medium">Earned</p>
+            <p className="font-bold text-emerald-200 font-display">+{totalEarned}</p>
           </div>
-          <div className="bg-white/10 rounded-xl p-3 text-center">
-            <p className="text-white/70 text-xs mb-1">Total Spent</p>
-            <p className="font-bold text-red-300">-{totalSpent}</p>
+          <div className="bg-white/15 rounded-2xl p-3 text-center backdrop-blur-sm ring-1 ring-white/10">
+            <p className="text-white/65 text-xs mb-1 font-medium">Spent</p>
+            <p className="font-bold text-rose-200 font-display">-{totalSpent}</p>
           </div>
-          <div className="bg-white/10 rounded-xl p-3 text-center">
-            <p className="text-white/70 text-xs mb-1">Bonuses</p>
-            <p className="font-bold text-gold-300">+{totalBonus}</p>
+          <div className="bg-white/15 rounded-2xl p-3 text-center backdrop-blur-sm ring-1 ring-white/10">
+            <p className="text-white/65 text-xs mb-1 font-medium">Bonuses</p>
+            <p className="font-bold text-amber-200 font-display">+{totalBonus}</p>
           </div>
         </div>
       </div>
 
-      {/* How to Earn */}
-      <div className="card p-5 mb-6">
-        <h2 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-          <TrendingUp size={18} className="text-teal-500" />
-          How to Earn More Credits
+      <div className="card p-6 sm:p-7 mb-8 rounded-3xl">
+        <h2 className="font-display font-bold text-slate-900 dark:text-white mb-5 flex items-center gap-2">
+          <TrendingUp size={20} className="text-teal-500" />
+          How to earn more
         </h2>
         <div className="grid sm:grid-cols-2 gap-3">
           {HOW_TO_EARN.map((item) => (
-            <div key={item.title} className="flex gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+            <div key={item.title} className="flex gap-3 p-4 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-100 dark:border-slate-700/80">
               <span className="text-2xl flex-shrink-0">{item.icon}</span>
               <div>
                 <p className="font-semibold text-sm text-gray-800 dark:text-gray-200">{item.title}</p>
@@ -111,8 +109,8 @@ export default function CreditWalletPage() {
       </div>
 
       {/* Transaction History */}
-      <div className="card p-5">
-        <h2 className="font-bold text-gray-900 dark:text-white mb-4">Transaction History</h2>
+      <div className="card p-6 sm:p-7 rounded-3xl">
+        <h2 className="font-display font-bold text-slate-900 dark:text-white mb-5">Transaction history</h2>
         {loading ? (
           <div className="flex items-center justify-center py-10">
             <Loader2 size={24} className="animate-spin text-teal-500" />
@@ -130,7 +128,7 @@ export default function CreditWalletPage() {
                 return (
                   <div
                     key={tx.id}
-                    className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                    className="flex items-center gap-4 p-3 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors border border-transparent hover:border-slate-100 dark:hover:border-slate-700"
                   >
                     <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${cfg.bg} ${cfg.color}`}>
                       {cfg.icon}
