@@ -1,6 +1,7 @@
 const express = require("express");
 const prisma = require("../lib/prisma");
 const { protect, requireVerified } = require("../middleware/auth");
+const { matchTutors } = require("../ai/matchingService");
 
 const router = express.Router();
 
@@ -144,7 +145,20 @@ router.post("/", protect, requireVerified, async (req, res) => {
       }),
     ]);
 
-    res.status(201).json({ message: "Help request posted successfully", request });
+    let matches = [];
+    let matchError = null;
+    try {
+      matches = await matchTutors(request.id, req.user.id);
+    } catch (err) {
+      matchError = err.message || "AI match failed";
+    }
+
+    res.status(201).json({
+      message: "Help request posted successfully",
+      request,
+      matches,
+      matchError,
+    });
   } catch (error) {
     console.error("Create request error:", error);
     res.status(500).json({ message: "Server error" });

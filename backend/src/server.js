@@ -12,6 +12,7 @@ const requestRoutes = require("./routes/requests");
 const sessionRoutes = require("./routes/sessions");
 const creditRoutes = require("./routes/credits");
 const notificationRoutes = require("./routes/notifications");
+const aiRoutes = require("./routes/ai");
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -38,6 +39,7 @@ app.use("/api/requests", requestRoutes);
 app.use("/api/sessions", sessionRoutes);
 app.use("/api/credits", creditRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/ai", aiRoutes);
 
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
   customSiteTitle: "LearnLoop API Docs",

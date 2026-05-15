@@ -22,6 +22,7 @@ export default function RequestDetailPage() {
   const { user } = useAuthStore();
   const [request, setRequest] = useState(null);
   const [matches, setMatches] = useState([]);
+  const [matchLoading, setMatchLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [accepting, setAccepting] = useState(false);
 
@@ -44,10 +45,12 @@ export default function RequestDetailPage() {
 
   useEffect(() => {
     if (!request || request.postedById !== user?.id || request.status !== "OPEN") return;
+    setMatchLoading(true);
     api
-      .get(`/requests/${id}/matches`)
-      .then((r) => setMatches(r.data.tutors || []))
-      .catch(() => {});
+      .post("/ai/match", { requestId: id })
+      .then((r) => setMatches(r.data.matches || []))
+      .catch(() => {})
+      .finally(() => setMatchLoading(false));
   }, [request, user?.id, id]);
 
   const handleAccept = async () => {
@@ -169,42 +172,66 @@ export default function RequestDetailPage() {
       )}
 
       {/* Owner: smart matches while open */}
-      {isOwner && request.status === "OPEN" && matches.length > 0 && (
+      {isOwner && request.status === "OPEN" && (
         <div className="card p-5 mb-6">
           <h2 className="font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-3">
             <Sparkles size={18} className="text-teal-500" />
-            Suggested peer tutors
+            AI tutor matches
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-            Verified students who match your subject and language. The first tutor to accept your request will be paired with you.
+            Ranked by topic similarity, language fit, rating, and reliability. The first tutor to accept your request will be paired with you.
           </p>
-          <ul className="space-y-3">
-            {matches.map((t) => (
-              <li
-                key={t.id}
-                className="flex items-center justify-between gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800/80"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-lg bg-primary-500/20 text-primary-600 dark:text-primary-300 flex items-center justify-center font-bold text-sm flex-shrink-0">
-                    {t.profilePicture ? (
-                      <img src={t.profilePicture} alt="" className="w-full h-full rounded-lg object-cover" />
-                    ) : (
-                      t.name?.[0]?.toUpperCase()
+          {matchLoading ? (
+            <div className="flex items-center gap-2 text-sm text-gray-400">
+              <Loader2 size={16} className="animate-spin" />
+              Scoring best tutors…
+            </div>
+          ) : matches.length > 0 ? (
+            <ul className="space-y-3">
+              {matches.map((match) => {
+                const t = match.tutor || {};
+                const score = Math.round((match.compatibilityScore || 0) * 100);
+                return (
+                  <li
+                    key={match.tutorId}
+                    className="flex flex-col gap-3 p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/80"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 rounded-lg bg-primary-500/20 text-primary-600 dark:text-primary-300 flex items-center justify-center font-bold text-sm flex-shrink-0">
+                          {t.profilePicture ? (
+                            <img src={t.profilePicture} alt="" className="w-full h-full rounded-lg object-cover" />
+                          ) : (
+                            t.name?.[0]?.toUpperCase()
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-medium text-gray-900 dark:text-white truncate">{t.name}</p>
+                          <p className="text-xs text-gray-500">
+                            Match score {score}% · {t.totalSessionsTaught ?? 0} sessions taught
+                          </p>
+                        </div>
+                      </div>
+                      <Link to={`/tutors/${t.id}`} className="text-xs text-teal-500 hover:underline flex-shrink-0">
+                        Profile
+                      </Link>
+                    </div>
+                    {match.matchReasons?.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {match.matchReasons.slice(0, 4).map((reason) => (
+                          <span key={reason} className="text-xs bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-full px-2.5 py-1 text-gray-600 dark:text-gray-300">
+                            {reason}
+                          </span>
+                        ))}
+                      </div>
                     )}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="font-medium text-gray-900 dark:text-white truncate">{t.name}</p>
-                    <p className="text-xs text-gray-500">
-                      Match score {t.matchScore}% · {t.totalSessionsTaught ?? 0} sessions taught
-                    </p>
-                  </div>
-                </div>
-                <Link to={`/tutors/${t.id}`} className="text-xs text-teal-500 hover:underline flex-shrink-0">
-                  Profile
-                </Link>
-              </li>
-            ))}
-          </ul>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="text-sm text-gray-500 dark:text-gray-400">No AI matches yet. Try again later.</p>
+          )}
         </div>
       )}
 
